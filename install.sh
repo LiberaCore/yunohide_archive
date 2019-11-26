@@ -46,7 +46,7 @@ ROOT_PASSWORD="$(diceware -n 9 -w en_eff)"
 
 # change root password
 echo root:"${ROOT_PASSWORD}" | chpasswd
-echo root:"${ROOT_PASSWORD}" | chpasswd
+echo admin:"${ADMIN_PASSWORD}" | chpasswd
 
 # allow ssh login for root
 sed -i '/PermitRootLogin/c\PermitRootLogin yes' /etc/ssh/sshd_config
@@ -214,8 +214,8 @@ for domain in $domain_list; do
       > "${metronome_conf_dir}/${domain}.cfg.lua"
 done
 
-wget https://raw.githubusercontent.com/LiberaCore/yunohide/master/templates/metronome.cfg.lua
-cat ./metronome.cfg.lua \
+wget https://raw.githubusercontent.com/LiberaCore/yunohide/master/templates/metronome.tpl.cfg.lua
+cat ./metronome.tpl.cfg.lua \
   | sed "s/{{ main_domain }}/${main_domain}/g" \
   > "${metronome_conf_dir}/metronome.cfg.lua"
 
@@ -230,7 +230,11 @@ echo_n "SSH-Address:"
 echo_n "$hidden_service_ssh"
 echo_n "YunoHost-Address:"
 echo_n "$hidden_service_default"
-echo_n "Please copy and save the addresses shown above."
+echo_n "root password:"
+echo_n "$ROOT_PASSWORD"
+echo_n "admin password:"
+echo_n "$ADMIN_PASSWORD"
+echo_n "Please copy and save the addresses & passwords shown above."
 echo_n "You need them to access your server from the internet!"
 echo_g "###################################################\n\n"
 #read -rsp $'Press enter to finish setup...\n'
