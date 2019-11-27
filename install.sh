@@ -40,8 +40,8 @@ apt-get install -y apt-transport-https
 
 apt-get install -y diceware
 
-ADMIN_PASSWORD="$(diceware -n 9 -w en_eff)"
-ROOT_PASSWORD="$(diceware -n 9 -w en_eff)"
+ADMIN_PASSWORD="$(diceware -n 5 -w en_eff)"
+ROOT_PASSWORD="$(diceware -n 5 -w en_eff)"
 
 
 # change root password
@@ -100,7 +100,7 @@ main_domain="$(cat /var/lib/tor/hidden_service_default/hostname)"
 
 ############################## YUNOHOST POSTINSTALL ####################################
 echo_n "Starting YunoHost post-install..."
-yunohost tools postinstall -d "$hidden_service_default" -p "{$ADMIN_PASSWORD}" --ignore-dyndns --force-password
+yunohost tools postinstall -d "$hidden_service_default" -p "$ADMIN_PASSWORD" --ignore-dyndns --force-password
 
 ############################## FIREWALL UPDATE ####################################
 # update firewall settings
@@ -168,36 +168,15 @@ hg clone https://hg.prosody.im/prosody-modules/ modules
 
 
 # configure mailserver for internal use
-# source: https://www.bentasker.co.uk/documentation/linux/161-configuring-postfix-to-block-outgoing-mail-to-all-but-one-domain
-# source: http://www.linuxmail.info/postfix-restrict-sender-recipient/
-# source: https://www.linuxquestions.org/questions/linux-server-73/how-to-reject-addresses-by-tld-in-postfix-678757/
-# source: https://serverfault.com/questions/644950/postfix-restrict-communication-inside-domain
+# source: https://serverfault.com/a/117597
 apt-get install -y tor-socks
+
+
 echo 'smtpd_recipient_restrictions =
-  check_recipient_access pcre:/etc/postfix/recipient_access,
-  reject_unauth_destinations' >> /etc/postfix/main.cf
-#echo '/\.onion$/           ALLOW' >> /etc/postfix/recipient_access
-echo '!/\.onion/           REJECT' >> /etc/postfix/recipient_access
-
-# change default gateway to smtp-over-tor
-# //TODO: test it!
-# source: http://marcelog.github.io/articles/configure_postfix_forward_all_email_smtp_gateway.html
-# source: https://www.void.gr/kargig/blog/2014/05/10/smtp-over-hidden-services-with-postfix/
-wget https://github.com/LiberaCore/LiberaCore/raw/master/bin/smtp_tor
-cp ./smtp_tor /usr/lib/postfix/smtp_tor
-chmod +x /usr/lib/postfix/smtp_tor
-echo "smtptor      unix  -       -       -       -       -       smtp_tor\
-  -o smtp_dns_support_level=disabled" >> /etc/postfix/master.cf
-
-echo "\
-transport_maps = hash:/etc/postfix/transport \
-" >> /etc/postfix/main.cf
-
-echo "\
-*        smtptor:localhost\
-" >> /etc/postfix/transport
-
-postmap hash:/etc/postfix/transport
+  hash:/etc/postfix/recipient_access,
+  reject' >> /etc/postfix/main.cf
+echo "$main_domain    OK" >> /etc/postfix/recipient_access
+postmap /etc/postfix/recipient_access
 postfix reload
 
 # retrieve variables
@@ -220,7 +199,7 @@ cat ./metronome.tpl.cfg.lua \
   > "${metronome_conf_dir}/metronome.cfg.lua"
 
 # reload metronome
-systemctl metronome reload
+systemctl reload metronome
 
 
 ############################## SERVER INFO ####################################
@@ -237,16 +216,3 @@ echo_n "$ADMIN_PASSWORD"
 echo_n "Please copy and save the addresses & passwords shown above."
 echo_n "You need them to access your server from the internet!"
 echo_g "###################################################\n\n"
-#read -rsp $'Press enter to finish setup...\n'
-# //TODO: print admin password & root password
-
-touch /etc/yunohide/installed
-
-# Second update/upgrade to upgrade yunohost
-#echo "updating package list"
-#apt-get update
-
-#echo "upgrading packages"
-# //TODO: let user update system using webpanel
-#apt-get install apt-transport-https
-#apt-get upgrade --fix-missing
