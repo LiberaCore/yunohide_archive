@@ -172,7 +172,7 @@ hg clone https://hg.prosody.im/prosody-modules/ modules
 apt-get install -y tor-socks
 
 
-echo 'smtpd_recipient_restrictions =
+echo -e '\nsmtpd_recipient_restrictions =
   hash:/etc/postfix/recipient_access,
   reject' >> /etc/postfix/main.cf
 echo "$main_domain    OK" >> /etc/postfix/recipient_access
