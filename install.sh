@@ -40,12 +40,12 @@ apt-get install -y apt-transport-https
 
 apt-get install -y diceware
 
-ADMIN_PASSWORD="$(diceware -n 5 -w en_eff)"
-ROOT_PASSWORD="$(diceware -n 5 -w en_eff)"
+ADMIN_PASSWORD="$(diceware -n 6 -w en_eff)"
+ROOT_PASSWORD="$(diceware -n 6 -w en_eff)"
 
 
 # change root password
-echo root:"${ROOT_PASSWORD}" | chpasswd
+echo pi:"${ROOT_PASSWORD}" | chpasswd
 echo admin:"${ADMIN_PASSWORD}" | chpasswd
 
 # allow ssh login for root
@@ -209,7 +209,7 @@ echo_n "SSH-Address:"
 echo_n "$hidden_service_ssh"
 echo_n "YunoHost-Address:"
 echo_n "$hidden_service_default"
-echo_n "root password:"
+echo_n "pi password:"
 echo_n "$ROOT_PASSWORD"
 echo_n "admin password:"
 echo_n "$ADMIN_PASSWORD"
