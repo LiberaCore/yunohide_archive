@@ -46,7 +46,8 @@ ROOT_PASSWORD="$(diceware -n 6 -w en_eff)"
 
 # change root password
 echo pi:"${ROOT_PASSWORD}" | chpasswd
-echo admin:"${ADMIN_PASSWORD}" | chpasswd
+echo root:"${ROOT_PASSWORD}" | chpasswd
+#echo admin:"${ADMIN_PASSWORD}" | chpasswd
 
 # allow ssh login for root
 sed -i '/PermitRootLogin/c\PermitRootLogin yes' /etc/ssh/sshd_config
@@ -54,9 +55,9 @@ sed -i '/PermitRootLogin/c\PermitRootLogin yes' /etc/ssh/sshd_config
 
 
 ############################## INSTALL YUNOHOST #################################
-echo "Install YunoHost"
-apt-get install -y wget
-bash <(wget -q -O- https://install.yunohost.org/stretch) -f -a
+#echo "Install YunoHost"
+#apt-get install -y wget
+#bash <(wget -q -O- https://install.yunohost.org/stretch) -f -a
 
 
 ############################## HIDDEN SERVICE CONFIGURATION ####################################
