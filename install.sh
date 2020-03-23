@@ -45,9 +45,9 @@ ROOT_PASSWORD="$(diceware -n 6 -w en_eff)"
 
 
 # change root password
-echo pi:"${ROOT_PASSWORD}" | chpasswd
+#echo pi:"${ROOT_PASSWORD}" | chpasswd
 echo root:"${ROOT_PASSWORD}" | chpasswd
-#echo admin:"${ADMIN_PASSWORD}" | chpasswd
+echo admin:"${ADMIN_PASSWORD}" | chpasswd
 
 # allow ssh login for root
 sed -i '/PermitRootLogin/c\PermitRootLogin yes' /etc/ssh/sshd_config
@@ -210,7 +210,7 @@ echo_n "SSH-Address:"
 echo_n "$hidden_service_ssh"
 echo_n "YunoHost-Address:"
 echo_n "$hidden_service_default"
-echo_n "pi password:"
+echo_n "root password:"
 echo_n "$ROOT_PASSWORD"
 echo_n "admin password:"
 echo_n "$ADMIN_PASSWORD"
