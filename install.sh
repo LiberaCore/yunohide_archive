@@ -46,8 +46,8 @@ ROOT_PASSWORD="$(diceware -n 6 -w en_eff)"
 
 # change root password
 #echo pi:"${ROOT_PASSWORD}" | chpasswd
-echo root:"${ROOT_PASSWORD}" | chpasswd
-echo admin:"${ADMIN_PASSWORD}" | chpasswd
+#echo root:"${ROOT_PASSWORD}" | chpasswd
+#echo admin:"${ADMIN_PASSWORD}" | chpasswd
 
 # allow ssh login for root
 sed -i '/PermitRootLogin/c\PermitRootLogin yes' /etc/ssh/sshd_config
@@ -202,7 +202,7 @@ cat ./metronome.tpl.cfg.lua \
 # reload metronome
 systemctl reload metronome
 
-
+echo root:"${ROOT_PASSWORD}" | chpasswd
 ############################## SERVER INFO ####################################
 echo_g "\n\n\n###################################################"
 echo_n "Finished YunoHide installation!\n"
